@@ -27,6 +27,23 @@ func (q *Queries) CreateEntry(ctx context.Context, arg presentations.CreateEntry
 	return i, err
 }
 
+func (q *Queries) GetEntry(ctx context.Context, id int64) (entity.Entry, error) {
+
+	query := `
+	SELECT id, account_id, amount, created_at FROM entries
+	WHERE id = $1 LIMIT 1
+	`
+	row := q.db.QueryRowContext(ctx, query, id)
+	var i entity.Entry
+	err := row.Scan(
+		&i.ID,
+		&i.AccountID,
+		&i.Amount,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 func (q *Queries) ListEntries(ctx context.Context, arg presentations.ListEntriesParams) ([]entity.Entry, error) {
 	query := `
 	SELECT id, account_id, amount, created_at FROM entries

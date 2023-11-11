@@ -20,6 +20,11 @@ type Queries struct {
 	db DBTX
 }
 
+// // GetEntry implements Querier.
+// func (*Queries) GetEntry(ctx context.Context, id int64) (entity.Entry, error) {
+// 	panic("unimplemented")
+// }
+
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 	return &Queries{
 		db: tx,
