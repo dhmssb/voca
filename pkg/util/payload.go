@@ -6,11 +6,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// var (
-// 	ErrExpiredToken = errors.New("token has expired")
-// 	ErrInvalidToken = errors.New("token is invalid")
-// )
-
 type Payload struct {
 	ID        uuid.UUID `json:"id"`
 	Username  string    `json:"username"`

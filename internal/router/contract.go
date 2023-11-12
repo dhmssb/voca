@@ -6,6 +6,8 @@ import (
 	"voca/pkg/util"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 )
 
 type Server struct {
@@ -26,6 +28,9 @@ func NewServer(cfg util.Config, store repositories.Store) (*Server, error) {
 		Config:     cfg,
 		Store:      store,
 		TokenMaker: tokenMaker,
+	}
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("currency", util.GetValidCurrencyValidator())
 	}
 
 	server.setupRouter()

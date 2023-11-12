@@ -2,6 +2,7 @@ package ucase
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 	"voca/internal/presentations"
 	"voca/internal/repositories"
@@ -25,9 +26,9 @@ func (u *Ucases) CreateAccount(ctx *gin.Context) {
 		return
 	}
 
-	// authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	authPayload := ctx.MustGet(util.AuthorizationPayloadKey).(*util.Payload)
 	arg := presentations.CreateAccountParams{
-		// Owner:    authPayload.Username,
+		Owner:    authPayload.Username,
 		Currency: req.Currency,
 		Balance:  0,
 	}
@@ -66,12 +67,12 @@ func (u *Ucases) GetAccountByID(ctx *gin.Context) {
 		return
 	}
 
-	// authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-	// if account.Owner != authPayload.Username {
-	// 	err := errors.New("account doesn't belong to the authenticated user")
-	// 	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-	// 	return
-	// }
+	authPayload := ctx.MustGet(util.AuthorizationPayloadKey).(*util.Payload)
+	if account.Owner != authPayload.Username {
+		err := errors.New("account doesn't belong to the authenticated user")
+		ctx.JSON(http.StatusUnauthorized, util.ErrorResponse(err))
+		return
+	}
 
 	ctx.JSON(http.StatusOK, account)
 }
@@ -85,10 +86,10 @@ func (u *Ucases) ListAccounts(ctx *gin.Context) {
 		return
 	}
 
-	// authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	authPayload := ctx.MustGet(util.AuthorizationPayloadKey).(*util.Payload)
 
 	arg := presentations.ListAccountsParams{
-		// Owner:  authPayload.Username,
+		Owner:  authPayload.Username,
 		Limit:  req.PageID,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}
