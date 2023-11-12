@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"voca/internal/repositories"
 	"voca/pkg/util"
 
@@ -8,18 +9,23 @@ import (
 )
 
 type Server struct {
-	store repositories.Store
-	// tokenMaker token.Maker
-	router *gin.Engine
-	config util.Config
+	Store      repositories.Store
+	TokenMaker util.Maker
+	Router     *gin.Engine
+	Config     util.Config
 }
 
 func NewServer(cfg util.Config, store repositories.Store) (*Server, error) {
 
+	s := util.Config{}
+	tokenMaker, err := util.NewPasetoMaker(s.TokenSymmetricKey)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create token maker: %w", err)
+	}
 	server := &Server{
-		config: cfg,
-		store:  store,
-		// tokenMaker: tokenMaker,
+		Config:     cfg,
+		Store:      store,
+		TokenMaker: tokenMaker,
 	}
 
 	server.setupRouter()
@@ -27,5 +33,5 @@ func NewServer(cfg util.Config, store repositories.Store) (*Server, error) {
 }
 
 func (server *Server) Start(addr string) error {
-	return server.router.Run(addr)
+	return server.Router.Run(addr)
 }

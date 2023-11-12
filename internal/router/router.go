@@ -2,7 +2,7 @@ package router
 
 import (
 	"voca/internal/ucase"
-	_ "voca/internal/ucase"
+	"voca/pkg/util"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,16 +11,16 @@ func (server *Server) setupRouter() {
 	router := gin.Default()
 	u := ucase.Ucases{}
 
-	router.POST("/users", u.CreateAccount)
-	router.POST("/users/login", u.loginUser)
+	authRoutes := router.Group("/").Use(util.AuthMiddleware(u.TokenMaker))
 
-	authRoutes := router.Group("/").Use(authMiddleware(u.tokenMaker))
+	router.POST("/users", u.CreateUser)
+	router.POST("/users/login", u.LoginUser)
 
 	authRoutes.POST("/accounts", u.CreateAccount)
-	authRoutes.GET("/accounts", u.listAccounts)
-	authRoutes.GET("/accounts/:id", u.getAccountByID)
+	authRoutes.GET("/accounts", u.ListAccounts)
+	authRoutes.GET("/accounts/:id", u.GetAccountByID)
 
-	authRoutes.POST("/transfers", u.createTransfer)
-	server.router = router
+	authRoutes.POST("/transfers", u.CreateTransfer)
+	server.Router = router
 
 }

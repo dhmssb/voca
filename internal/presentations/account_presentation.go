@@ -26,7 +26,7 @@ type CreateAccountRequest struct {
 	Currency string `json:"currency" binding:"required,currency"`
 }
 
-type getAccountRequest struct {
+type GetAccountRequest struct {
 	ID int64 `uri:"id" binding:"required,min=1"`
 }
 
