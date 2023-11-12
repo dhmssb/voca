@@ -31,13 +31,12 @@ func LoadConfig(path string) (config util.Config, err error) {
 
 func Run() {
 
-	var s util.Config
 	cfg, err := LoadConfig(".")
 	if err != nil {
 		log.Fatal("cannot load config: ", err)
 	}
 
-	conn, err := sql.Open(s.DBDriver, s.DBSource)
+	conn, err := sql.Open(cfg.DBDriver, cfg.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db: ", err)
 	}
@@ -48,9 +47,8 @@ func Run() {
 		log.Fatal("cannot create server: ", err)
 	}
 
-	err = server.Start(s.ServerAddress)
+	err = server.Start(cfg.ServerAddress)
 	if err != nil {
 		log.Fatal("cannot start server:", err)
 	}
-
 }
