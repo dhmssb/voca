@@ -20,6 +20,10 @@ func (server *Server) setupRouter() {
 	authRoutes.GET("/accounts", u.ListAccounts)
 	authRoutes.GET("/accounts/:id", u.GetAccountByID)
 
+	authRoutes.POST("/products", u.CreateProduct)
+	authRoutes.GET("/products", u.ListProducts)
+	authRoutes.GET("/products/:id", u.ListProducts)
+
 	authRoutes.POST("/transfers", u.CreateTransfer)
 	server.Router = router
 
